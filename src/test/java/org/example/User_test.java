@@ -1,55 +1,110 @@
 package org.example;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 public class User_test {
-    
+
     @Test
-    public void testToGetTheFareof1km() {
-        User user1 = new User();
-        int tripIndex = user1.createTrip(1.0,10);
-        Map<String,Double> rideBreakdown = user1.getRideBreakdown(tripIndex);
-//        List<Map<String, Object>> listOfMaps = new ArrayList<>();
-//        listOfMaps.add(createMap(1.0, 0));
-//        listOfMaps.add(createMap(1.0, 0));
-//        listOfMaps.add(createMap(0.0, 10));
-//        listOfMaps.add(createMap(2.0, 10));
-//
-//        for (Map<String, Object> map : listOfMaps) {
-//            double distance = (double) map.get("distance");
-//            int time = (int) map.get("time");
-//            user1.createTrip(distance, time);
-//        }
-        System.out.println(rideBreakdown);
-        Map<String, Double> expectedBreakdown = new HashMap<>() {{
-            put("fareForDistanceTravel", 12.0);
-            put("waitingTimeFare", 12.0);
-            put("serviceCharge", 12.0);
-            put("baseCharge", 12.0);
-            put("finalFare",12.0);
-        }};
-        int tripIndex1 = user1.createTrip(15.0,99);
-        Map<String,Double> rideBreakdown1 = user1.getRideBreakdown(tripIndex1);
-        System.out.println(rideBreakdown1);
-
-        assertNotEquals(expectedBreakdown,rideBreakdown);
-    }
-    private static Map<String, Object> createMap(double distance, int time) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("distance", distance);
-        map.put("time", time);
-        return map;
+    public void testgetAccumulateFareforMultipleTrips() {
+        ArrayList<CabFare> list = new ArrayList<>(Arrays.asList(
+                new CabFare(1.0, 5),
+                new CabFare(0.0, 0),
+                new CabFare(0.2, 5),
+                new CabFare(1.9, 75),
+                new CabFare(0.0, 95)
+                ));
+        User fareList = new User(list);
+        assertEquals(440.52, fareList.getAccumulateFare(), 0.0);
     }
 
+    @Test
+    public void testgetRideBreakdownfor1km_And_5min_WaitingTime() {
 
 
+        User fareList = new User(new ArrayList<>());
+        Map<String, Double> actual;
+        actual= fareList.getRideBreakdown(1.0,5);
+        Map<String, Double> Expected = new HashMap<>();
+        Expected.put("fareForDistanceTravel",12.0);
+        Expected.put("waitingTimeFare",10.0);
+        Expected.put("serviceCharge",0.0);
+        Expected.put("baseCharge",2.0);
+        Expected.put("totalFare",27.0);
+
+        assertEquals(Expected, actual);
+    }
+
+    @Test
+    public void testGetFareBreakDown200m_and_0m_WaitingTime() {
 
 
+        User fareList = new User(new ArrayList<>());
+        Map<String, Double> actual;
+        actual= fareList.getRideBreakdown(0.2,5);
+        Map<String, Double> Expected = new HashMap<>();
+        Expected.put("fareForDistanceTravel",12.0);
+        Expected.put("waitingTimeFare",10.0);
+        Expected.put("serviceCharge",0.0);
+        Expected.put("baseCharge",2.0);
+        Expected.put("totalFare",27.0);
+
+        assertNotEquals(Expected, actual);
+    }
+
+    @Test
+    public void testGetFareBreakDown0km_and_0m_WaitingTime() {
+
+
+        User fareList = new User(new ArrayList<>());
+        Map<String, Double> actual;
+        actual= fareList.getRideBreakdown(0.0,0);
+        Map<String, Double> Expected = new HashMap<>();
+        Expected.put("fareForDistanceTravel",0.0);
+        Expected.put("waitingTimeFare",0.0);
+        Expected.put("serviceCharge",0.0);
+        Expected.put("baseCharge",2.0);
+        Expected.put("totalFare",27.0);
+
+        assertEquals(Expected, actual);
+    }
+
+    @Test
+    public void testGetFareBreakDown1km_and_0m_WaitingTime() {
+
+
+        User fareList = new User(new ArrayList<>());
+        Map<String, Double> actual;
+        actual= fareList.getRideBreakdown(1.0,0);
+        Map<String, Double> Expected = new HashMap<>();
+        Expected.put("fareForDistanceTravel",12.0);
+        Expected.put("waitingTimeFare",0.0);
+        Expected.put("serviceCharge",0.0);
+        Expected.put("baseCharge",2.0);
+        Expected.put("totalFare",27.0);
+
+        assertEquals(Expected, actual);
+    }
+
+    @Test
+    public void testGetFareBreakDown0km_and_90m_WaitingTime() {
+
+
+        User fareList = new User(new ArrayList<>());
+        Map<String, Double> actual;
+        actual= fareList.getRideBreakdown(0.0,90);
+        Map<String, Double> Expected = new HashMap<>();
+        Expected.put("fareForDistanceTravel",0.0);
+        Expected.put("waitingTimeFare",180.0);
+        Expected.put("serviceCharge",1.8);
+        Expected.put("baseCharge",2.0);
+        Expected.put("totalFare",183.8);
+
+        assertEquals(Expected, actual);
+    }
 
 }

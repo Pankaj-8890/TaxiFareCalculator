@@ -1,41 +1,38 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class User{
 
-    private Map<Integer, CabFare> cabFareMap;
-    private int tripIndex;
+    private ArrayList<CabFare> cabFareList;
 
-    public User(){
-        tripIndex=1;
-        cabFareMap = new HashMap<>();
-   }
-
-    public int createTrip(double distance,int waitingTime){
-        CabFare cabfare = new CabFare(distance,waitingTime);
-        System.out.printf("Added a new trip.%nTrip Index is: %d%n", tripIndex);
-        cabFareMap.put(tripIndex,cabfare);
-        tripIndex++;
-        return tripIndex - 1;
+    public User(ArrayList<CabFare> fareList){
+        this.cabFareList = fareList;
     }
 
-    public Map<String, Double> getRideBreakdown(int tripIndex) {
-        if (cabFareMap.containsKey(tripIndex)) {
-            CabFare cabObject = cabFareMap.get(tripIndex);
-            return cabObject.getFareBreakdown();
-        } else {
-            System.out.println("Invalid trip index");
-            return null; // or handle the case where the index is invalid
+    public double getAccumulateFare(){
+
+        ArrayList<CabFare> list = this.cabFareList;
+        double accumulateFare = 0.0;
+
+        for(CabFare e : list){
+            accumulateFare += e.calculateFare();
         }
+        return accumulateFare;
     }
 
-//    public Map<String,Double> getAllRidesBreakdown(){
-//        for (Map.Entry<Integer, CabFare> entry : cabFareMap.entrySet()) {
-//            CabFare cabFare = entry.getValue();
-//            Map<String,Double> rideBreakdown;
-//            cabFare.getFareBreakdown();
-//
-//        }
+    public Map<String, Double> getRideBreakdown(double d,int time){
+
+        Map<String, Double> rideBreakdown;
+        CabFare cab = new CabFare(d,time);
+        double res = cab.calculateFare();
+        rideBreakdown = cab.getFareBreakdown();
+        rideBreakdown.put("totalFare",res);
+
+        return rideBreakdown;
+    }
+
+
 }

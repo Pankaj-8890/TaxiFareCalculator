@@ -12,24 +12,23 @@ public class CabFare{
     private final double baseCharge = 2.0;
     private double serviceCharge;
     private double totalFare;
+    private double finalFare;
 
-    public CabFare(double d,int time){
-        this.distance = d;
-        this.waitingTime = time;
+    public CabFare(double distance, int waitingTime) {
+        this.distance = distance;
+        this.waitingTime = waitingTime;
         this.fareForDistanceTravel = 0.0;
         this.waitingTimeFare = 0.0;
         this.serviceCharge = 0.0;
         this.totalFare = 0.0;
+        calculateFare();
     }
-
-
-    protected double calculateFare() {
-
+    protected void calculateFare() {
         fareForDistanceTravel = Math.floor(distance) * 12;
         waitingTimeFare = waitingTime * 2;
         totalFare = fareForDistanceTravel + waitingTimeFare;
         if (totalFare > 100) serviceCharge = totalFare * 0.01;
-        return Math.max((totalFare + serviceCharge),25) + baseCharge;
+        finalFare= Math.max((totalFare + serviceCharge),25) + baseCharge;
     }
 
     protected Map<String,Double> getFareBreakdown(){
@@ -38,13 +37,13 @@ public class CabFare{
         rideBreakdown.put("waitingTimeFare",waitingTimeFare);
         rideBreakdown.put("serviceCharge",serviceCharge);
         rideBreakdown.put("baseCharge",baseCharge);
+        rideBreakdown.put("finalFare",finalFare);
 
         return rideBreakdown;
     }
-
-
-
-
+    public double getFinalFare() {
+        return finalFare;
+    }
 }
 
 
